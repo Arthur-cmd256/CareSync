@@ -1,11 +1,14 @@
 package com.caresync.agendamento_service.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
+import com.caresync.agendamento_service.dto.ConsultaGraphQLDTO;
 import com.caresync.agendamento_service.dto.ConsultaRequestDTO;
 import com.caresync.agendamento_service.dto.ConsultaResponseDTO;
 import com.caresync.agendamento_service.dto.ConsultaUpdateDTO;
@@ -80,5 +83,39 @@ public class ConsultaService {
 
 
         return consultaMapper.toResponseDTO(consultaRepository.save(consulta));
+    }
+
+    public List<ConsultaGraphQLDTO>  listarPorPaciente(Long pacienteId, Authentication authentication) {
+        validarAcessoAoPaciente(pacienteId, authentication);
+
+        return consultaRepository.findByPacienteId(pacienteId).stream()
+            .map(consultaMapper::toGraphQLDTO)
+            .toList();
+    }
+
+    public List<ConsultaGraphQLDTO> listarFuturasPorPaciente(Long pacienteId, Authentication authentication) {
+        validarAcessoAoPaciente(pacienteId, authentication);
+
+        return consultaRepository.findByPacienteIdAndDataHoraAfter(pacienteId, LocalDateTime.now()).stream()
+                .map(consultaMapper::toGraphQLDTO)
+                .toList();
+    }
+
+
+    private void validarAcessoAoPaciente(Long pacienteId, Authentication authentication) {
+        boolean ehPaciente = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(role -> role.equals("ROLE_PACIENTE"));
+
+        if (!ehPaciente) {
+            return; // MEDICO/ENFERMEIRO podem consultar qualquer paciente
+        }
+
+        Paciente pacienteLogado = pacienteRepository.findByUsuarioLogin(authentication.getName())
+                .orElseThrow(() -> new IllegalStateException("Paciente autenticado não encontrado"));
+                
+        if (!pacienteLogado.getId().equals(pacienteId)) {
+            throw new AccessDeniedException("Paciente só pode consultar o próprio histórico");
+        }
     }
 }

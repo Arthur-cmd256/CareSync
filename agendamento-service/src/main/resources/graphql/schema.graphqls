@@ -1,0 +1,13 @@
+type Consulta {
+    id: ID!
+    pacienteNome: String!
+    profissionalNome: String!
+    dataHora: String!
+    status: String!
+    observacoes: String
+}
+
+type Query {
+    consultasPorPaciente(pacienteId: ID!): [Consulta!]!
+    consultasFuturas(pacienteId: ID!): [Consulta!]!
+}

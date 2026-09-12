@@ -73,8 +73,37 @@ public class DataSeeder implements CommandLineRunner {
                 .cpf("111.222.333-44")
                 .telefone("(11) 99999-0000")
                 .build());
+
+        // ---- Pacientes extras ----
+        Usuario usuarioPaciente2 = usuarioRepository.save(Usuario.builder()
+                .nome("Maria Santos")
+                .login("paciente2")
+                .senha(passwordEncoder.encode("123456"))
+                .role(Role.PACIENTE)
+                .build());
+
+        pacienteRepository.save(Paciente.builder()
+                .usuario(usuarioPaciente2)
+                .dataNascimento(LocalDate.of(1987, 9, 12))
+                .cpf("222.333.444-55")
+                .telefone("(21) 98888-1111")
+                .build());
+
+        Usuario usuarioPaciente3 = usuarioRepository.save(Usuario.builder()
+                .nome("Pedro Alves")
+                .login("paciente3")
+                .senha(passwordEncoder.encode("123456"))
+                .role(Role.PACIENTE)
+                .build());
+
+        pacienteRepository.save(Paciente.builder()
+                .usuario(usuarioPaciente3)
+                .dataNascimento(LocalDate.of(1995, 1, 7))
+                .cpf("333.444.555-66")
+                .telefone("(31) 97777-2222")
+                .build());
                 
-        System.out.println("=== Seed de dados criado: medico1 / enfermeiro1 / paciente1 (senha: 123456) ===");
+        System.out.println("=== Seed de dados criado: medico1 / enfermeiro1 / paciente1 / paciente2 / paciente3 (senha: 123456) ===");
     }
 
 }
