@@ -58,7 +58,7 @@ public class SecurityConfig {
             .requestMatchers("/h2-console/**", "/graphiql/**").permitAll()
             // Só MEDICO e ENFERMEIRO podem criar/editar consultas
             .requestMatchers(HttpMethod.POST, "/consultas/**").hasAnyRole("MEDICO", "ENFERMEIRO")
-            .requestMatchers(HttpMethod.PUT, "/consultas/**").hasAnyRole("MEDICO", "ENFERMEIRO")
+            .requestMatchers(HttpMethod.PATCH, "/consultas/**").hasAnyRole("MEDICO", "ENFERMEIRO")
             // Leitura de consultas: os 3 perfis podem acessar
             // (o Service/Controller decide o que cada role pode VER de fato)
             .requestMatchers(HttpMethod.GET, "/consultas/**").hasAnyRole("MEDICO", "ENFERMEIRO", "PACIENTE")
