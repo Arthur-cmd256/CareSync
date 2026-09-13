@@ -11,3 +11,8 @@ type Query {
     consultasPorPaciente(pacienteId: ID!): [Consulta!]!
     consultasFuturas(pacienteId: ID!): [Consulta!]!
 }
+
+type Mutation {
+    criarConsulta(pacienteId: ID!, profissionalId: ID!, dataHora: String!, observacoes: String): Consulta!
+    atualizarConsulta(id: ID!, dataHora: String, observacoes: String, status: String): Consulta!
+}

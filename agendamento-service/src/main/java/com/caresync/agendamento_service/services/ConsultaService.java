@@ -54,10 +54,10 @@ public class ConsultaService {
 
     public ConsultaResponseDTO criar(ConsultaRequestDTO requestDTO) {
         Paciente paciente = pacienteRepository.findById(requestDTO.pacienteId())
-            .orElseThrow(() -> new RuntimeException("Paciente não encontrado: " + requestDTO.pacienteId()));
+            .orElseThrow(() -> new IllegalArgumentException("Paciente não encontrado: " + requestDTO.pacienteId()));
 
             Profissional profissional = profissionalRepository.findById(requestDTO.profissionalId())
-            .orElseThrow(() -> new RuntimeException("Profissional não encontrado: " + requestDTO.profissionalId()));
+            .orElseThrow(() -> new IllegalArgumentException("Profissional não encontrado: " + requestDTO.profissionalId()));
 
             Consulta consulta = Consulta.builder()
                 .paciente(paciente)
@@ -82,7 +82,7 @@ public class ConsultaService {
 
     public ConsultaResponseDTO atualizar(Long id, ConsultaUpdateDTO requestDTO) {
         Consulta consulta = consultaRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Consulta não encontrada: " + id));
+            .orElseThrow(() -> new IllegalArgumentException("Consulta não encontrada: " + id));
 
         if (requestDTO.dataHora() != null) {
             consulta.setDataHora(requestDTO.dataHora());

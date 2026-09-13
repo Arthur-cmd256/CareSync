@@ -241,6 +241,144 @@
               "raw": "{\n  \"query\": \"query { consultasPorPaciente(pacienteId: 2) { id dataHora status } }\"\n}"
             }
           }
+        },
+        {
+          "name": "Medico - criar consulta via mutation (OK)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/graphql", "host": ["{{base_url}}"], "path": ["graphql"] },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "username", "value": "medico1" },
+                { "key": "password", "value": "123456" }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"mutation { criarConsulta(pacienteId: 1, profissionalId: 1, dataHora: \\\"2026-10-01T10:00:00\\\", observacoes: \\\"Criada via GraphQL\\\") { id status observacoes } }\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Medico - atualizar consulta via mutation (OK)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/graphql", "host": ["{{base_url}}"], "path": ["graphql"] },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "username", "value": "medico1" },
+                { "key": "password", "value": "123456" }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"mutation { atualizarConsulta(id: 1, status: \\\"CANCELADA\\\") { id status } }\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Paciente - tentar criar consulta via mutation (esperado: erro FORBIDDEN)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/graphql", "host": ["{{base_url}}"], "path": ["graphql"] },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "username", "value": "paciente1" },
+                { "key": "password", "value": "123456" }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"mutation { criarConsulta(pacienteId: 1, profissionalId: 1, dataHora: \\\"2026-10-05T10:00:00\\\", observacoes: \\\"Nao deveria funcionar\\\") { id } }\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Validacao e Erros",
+      "item": [
+        {
+          "name": "Criar consulta sem pacienteId (esperado: 400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/consultas", "host": ["{{base_url}}"], "path": ["consultas"] },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "username", "value": "medico1" },
+                { "key": "password", "value": "123456" }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profissionalId\": 1,\n  \"dataHora\": \"2026-10-10T10:00:00\",\n  \"observacoes\": \"Faltando pacienteId de proposito\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Criar consulta com data no passado (esperado: 400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/consultas", "host": ["{{base_url}}"], "path": ["consultas"] },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "username", "value": "medico1" },
+                { "key": "password", "value": "123456" }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pacienteId\": 1,\n  \"profissionalId\": 1,\n  \"dataHora\": \"2020-01-01T10:00:00\",\n  \"observacoes\": \"Data no passado de proposito\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Criar consulta com pacienteId inexistente (esperado: 404)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/consultas", "host": ["{{base_url}}"], "path": ["consultas"] },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "username", "value": "medico1" },
+                { "key": "password", "value": "123456" }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pacienteId\": 9999,\n  \"profissionalId\": 1,\n  \"dataHora\": \"2026-10-15T10:00:00\",\n  \"observacoes\": \"Paciente inexistente de proposito\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Editar consulta inexistente (esperado: 404)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/consultas/9999", "host": ["{{base_url}}"], "path": ["consultas", "9999"] },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "username", "value": "medico1" },
+                { "key": "password", "value": "123456" }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"CANCELADA\"\n}"
+            }
+          }
         }
       ]
     }

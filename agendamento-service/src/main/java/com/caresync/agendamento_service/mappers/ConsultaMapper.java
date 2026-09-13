@@ -31,4 +31,16 @@ public class ConsultaMapper {
         );
     }
 
+        public ConsultaGraphQLDTO toGraphQLDTO(ConsultaResponseDTO dto) {
+        return new ConsultaGraphQLDTO(
+                dto.id(),
+                dto.pacienteNome(),
+                dto.profissionalNome(),
+                dto.dataHora().toString(),
+                dto.status().name(),
+                dto.observacoes()
+        );
+    }
+
+
 }

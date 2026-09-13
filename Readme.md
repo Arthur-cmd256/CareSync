@@ -123,6 +123,45 @@ Um paciente autenticado só pode consultar o próprio `pacienteId` — qualquer
 tentativa de consultar outro paciente retorna erro `FORBIDDEN`. Médicos e
 enfermeiros podem consultar o histórico de qualquer paciente.
 
+### Mutations
+
+Criar e editar consultas também está disponível via GraphQL (além do REST),
+cobrindo a leitura do PDF que cita essa funcionalidade dentro da seção de
+GraphQL. Restrito a Médico/Enfermeiro, igual ao REST.
+
+```graphql
+mutation {
+  criarConsulta(
+    pacienteId: 1
+    profissionalId: 1
+    dataHora: "2026-10-01T10:00:00"
+    observacoes: "Criada via GraphQL"
+  ) {
+    id
+    status
+  }
+}
+
+mutation {
+  atualizarConsulta(id: 1, status: "CANCELADA") {
+    id
+    status
+  }
+}
+```
+
+## Tratamento de erros
+
+A API retorna respostas padronizadas para os cenários de erro mais comuns,
+sem vazar detalhes internos (stack traces):
+
+| Situação | Status |
+|---|---|
+| Dados de entrada inválidos (ex: campo obrigatório faltando, data no passado) | `400 Bad Request` |
+| Usuário autenticado mas sem permissão para a ação (ex: paciente tentando criar consulta) | `403 Forbidden` |
+| Recurso não encontrado (ex: `pacienteId` ou consulta inexistente) | `404 Not Found` |
+| Erro inesperado | `500 Internal Server Error` (mensagem genérica) |
+
 ## Console H2
 
 `http://localhost:8080/h2-console`

@@ -8,6 +8,7 @@ import com.caresync.agendamento_service.dto.ConsultaResponseDTO;
 import com.caresync.agendamento_service.dto.ConsultaUpdateDTO;
 import com.caresync.agendamento_service.services.ConsultaService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public class ConsultaController {
     }
 
     @PostMapping
-    public ResponseEntity<ConsultaResponseDTO> criar(@RequestBody ConsultaRequestDTO requestDTO) {
+    public ResponseEntity<ConsultaResponseDTO> criar(@Valid @RequestBody ConsultaRequestDTO requestDTO) {
         return ResponseEntity.ok(consultaService.criar(requestDTO));
     }
     
