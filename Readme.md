@@ -141,8 +141,12 @@ Sobe os dois serviços já compilados e o RabbitMQ com um único comando,
 sem necessidade de instalar Java, Maven ou IDE:
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
+
+> Se seu Docker for uma versão mais antiga, use `docker-compose up --build`
+> (com hífen) — o comando faz a mesma coisa, só muda a sintaxe conforme a
+> versão instalada.
 
 - `agendamento-service` fica disponível em `http://localhost:8080`
 - `notificacao-service` fica disponível em `http://localhost:8081`
