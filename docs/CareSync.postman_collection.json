@@ -1,0 +1,248 @@
+{
+  "info": {
+    "name": "CareSync",
+    "description": "Collection de testes para o Tech Challenge Fase 3 - CareSync. Cobre autenticacao por perfil (medico, enfermeiro, paciente), CRUD de consultas via REST, consultas via GraphQL, e cenarios de bloqueio de permissao (403).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8080" }
+  ],
+  "item": [
+    {
+      "name": "1. Medico",
+      "item": [
+        {
+          "name": "Listar consultas (todas)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/consultas", "host": ["{{base_url}}"], "path": ["consultas"] },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "username", "value": "medico1" },
+                { "key": "password", "value": "123456" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Criar consulta",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/consultas", "host": ["{{base_url}}"], "path": ["consultas"] },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "username", "value": "medico1" },
+                { "key": "password", "value": "123456" }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pacienteId\": 1,\n  \"profissionalId\": 1,\n  \"dataHora\": \"2026-09-20T10:00:00\",\n  \"observacoes\": \"Consulta de rotina\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Editar consulta (PATCH - cancelar)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/consultas/1", "host": ["{{base_url}}"], "path": ["consultas", "1"] },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "username", "value": "medico1" },
+                { "key": "password", "value": "123456" }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"CANCELADA\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Enfermeiro",
+      "item": [
+        {
+          "name": "Listar consultas (todas)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/consultas", "host": ["{{base_url}}"], "path": ["consultas"] },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "username", "value": "enfermeiro1" },
+                { "key": "password", "value": "123456" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Criar consulta",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/consultas", "host": ["{{base_url}}"], "path": ["consultas"] },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "username", "value": "enfermeiro1" },
+                { "key": "password", "value": "123456" }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pacienteId\": 1,\n  \"profissionalId\": 1,\n  \"dataHora\": \"2026-09-22T14:30:00\",\n  \"observacoes\": \"Retorno\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Paciente",
+      "item": [
+        {
+          "name": "Listar minhas consultas (OK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/consultas", "host": ["{{base_url}}"], "path": ["consultas"] },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "username", "value": "paciente1" },
+                { "key": "password", "value": "123456" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Tentar criar consulta (esperado: 403)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/consultas", "host": ["{{base_url}}"], "path": ["consultas"] },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "username", "value": "paciente1" },
+                { "key": "password", "value": "123456" }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pacienteId\": 1,\n  \"profissionalId\": 1,\n  \"dataHora\": \"2026-09-25T09:00:00\",\n  \"observacoes\": \"Nao deveria funcionar\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Tentar editar consulta (esperado: 403)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/consultas/1", "host": ["{{base_url}}"], "path": ["consultas", "1"] },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "username", "value": "paciente1" },
+                { "key": "password", "value": "123456" }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"CANCELADA\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. GraphQL",
+      "item": [
+        {
+          "name": "Medico - historico de qualquer paciente (OK)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/graphql", "host": ["{{base_url}}"], "path": ["graphql"] },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "username", "value": "medico1" },
+                { "key": "password", "value": "123456" }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"query { consultasPorPaciente(pacienteId: 1) { id pacienteNome profissionalNome dataHora status observacoes } }\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Medico - consultas futuras de um paciente (OK)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/graphql", "host": ["{{base_url}}"], "path": ["graphql"] },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "username", "value": "medico1" },
+                { "key": "password", "value": "123456" }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"query { consultasFuturas(pacienteId: 1) { id dataHora status } }\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Paciente - proprio historico (OK)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/graphql", "host": ["{{base_url}}"], "path": ["graphql"] },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "username", "value": "paciente1" },
+                { "key": "password", "value": "123456" }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"query { consultasPorPaciente(pacienteId: 1) { id dataHora status } }\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Paciente - historico de OUTRO paciente (esperado: erro FORBIDDEN)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/graphql", "host": ["{{base_url}}"], "path": ["graphql"] },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "username", "value": "paciente1" },
+                { "key": "password", "value": "123456" }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"query { consultasPorPaciente(pacienteId: 2) { id dataHora status } }\"\n}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
