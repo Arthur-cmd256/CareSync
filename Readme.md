@@ -59,11 +59,13 @@ forma assíncrona via RabbitMQ:
 
 ### Usuários de teste (criados automaticamente ao subir a aplicação)
 
-| Login | Senha | Perfil |
-|---|---|---|
-| `medico1` | `123456` | MEDICO |
-| `enfermeiro1` | `123456` | ENFERMEIRO |
-| `paciente1` | `123456` | PACIENTE |
+| Login | Nome | Senha | Perfil |
+|---|---|---|---|
+| `medico1` | `Dra. Ana Souza` | `123456` | MEDICO |
+| `enfermeiro1` | `João Pereira` | `123456` | ENFERMEIRO |
+| `paciente1` | `Carlos Lima` | `123456` | PACIENTE |
+| `paciente2` | `Maria Santos` | `123456` | PACIENTE |
+| `paciente3` | `Pedro Alves` | `123456` | PACIENTE |
 
 Autenticação via **HTTP Basic Auth** — envie o header `Authorization: Basic
 <login:senha em base64>` em cada requisição (o Postman faz isso
