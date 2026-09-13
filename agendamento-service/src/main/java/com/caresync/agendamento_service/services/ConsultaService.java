@@ -13,6 +13,8 @@ import com.caresync.agendamento_service.dto.ConsultaRequestDTO;
 import com.caresync.agendamento_service.dto.ConsultaResponseDTO;
 import com.caresync.agendamento_service.dto.ConsultaUpdateDTO;
 import com.caresync.agendamento_service.mappers.ConsultaMapper;
+import com.caresync.agendamento_service.messages.NotificacaoConsultaEvent;
+import com.caresync.agendamento_service.messages.NotificacaoProducer;
 import com.caresync.agendamento_service.models.Paciente;
 import com.caresync.agendamento_service.models.Profissional;
 import com.caresync.agendamento_service.models.enums.Consulta;
@@ -31,6 +33,7 @@ public class ConsultaService {
     private final PacienteRepository pacienteRepository;
     private final ProfissionalRepository profissionalRepository;
     private final ConsultaMapper consultaMapper;
+    private final NotificacaoProducer notificacaoProducer;
 
     public List<ConsultaResponseDTO> listarParaUsuarioLogado(Authentication authentication) {
         boolean ehPaciente = authentication.getAuthorities().stream()
@@ -64,7 +67,17 @@ public class ConsultaService {
                 .status(StatusConsulta.AGENDADA)
                 .build();
 
-        return consultaMapper.toResponseDTO(consultaRepository.save(consulta));
+            Consulta consultaSalva = consultaRepository.save(consulta);
+
+            notificacaoProducer.publicar(new NotificacaoConsultaEvent(
+                consultaSalva.getId(),
+                consultaSalva.getPaciente().getUsuario().getNome(),
+                consultaSalva.getProfissional().getUsuario().getNome(),
+                consultaSalva.getDataHora().toString(),
+                "CRIADA"
+            ));
+
+        return consultaMapper.toResponseDTO(consultaRepository.save(consultaSalva));
     }
 
     public ConsultaResponseDTO atualizar(Long id, ConsultaUpdateDTO requestDTO) {
@@ -81,8 +94,17 @@ public class ConsultaService {
             consulta.setStatus(requestDTO.status());
         }
 
+        Consulta consultaAtualizada = consultaRepository.save(consulta);
 
-        return consultaMapper.toResponseDTO(consultaRepository.save(consulta));
+        notificacaoProducer.publicar(new NotificacaoConsultaEvent(
+            consultaAtualizada.getId(),
+            consultaAtualizada.getPaciente().getUsuario().getNome(),
+            consultaAtualizada.getProfissional().getUsuario().getNome(),
+            consultaAtualizada.getDataHora().toString(),
+            "ATUALIZADA"
+        ));
+
+        return consultaMapper.toResponseDTO(consultaAtualizada);
     }
 
     public List<ConsultaGraphQLDTO>  listarPorPaciente(Long pacienteId, Authentication authentication) {

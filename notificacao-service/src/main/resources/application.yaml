@@ -12,6 +12,6 @@ spring:
 
 caresync:
   rabbitmq:
-    queue: consultas.notificacoes
-    exchange: consultas.exchange
-    routing-key: consultas.routingkey
+    queue-name: consultas.notificacoes
+    exchange-name: consultas.exchange
+    routing-key-name: consultas.routingkey

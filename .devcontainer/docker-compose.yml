@@ -21,6 +21,8 @@ services:
       - ..:/workspace:cached
     working_dir: /workspace
     command: sleep infinity
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
     depends_on:
       - rabbitmq
     ports:
