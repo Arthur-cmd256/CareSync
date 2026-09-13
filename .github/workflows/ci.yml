@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    services:
+      rabbitmq:
+        image: rabbitmq:3-management
+        ports:
+          - 5672:5672
+        options: >-
+          --health-cmd "rabbitmq-diagnostics -q ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Verify agendamento-service
+        working-directory: agendamento-service
+        run: ./mvnw verify
+
+      - name: Verify notificacao-service
+        working-directory: notificacao-service
+        run: ./mvnw verify
+
+      - name: Upload agendamento coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: agendamento-jacoco-report
+          path: agendamento-service/target/site/jacoco
+
+      - name: Upload notificacao coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: notificacao-jacoco-report
+          path: notificacao-service/target/site/jacoco

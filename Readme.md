@@ -255,6 +255,13 @@ python3 -m http.server 8080 --directory agendamento-service/target/site/jacoco
 
 Depois, acesse `http://localhost:8080/index.html` no navegador.
 
+## Integração contínua
+
+O workflow `.github/workflows/ci.yml` executa automaticamente nos pushes para
+`main` e nos pull requests. Ele inicia um RabbitMQ de serviço, executa
+`./mvnw verify` nos dois módulos e publica os relatórios JaCoCo como artefatos
+da execução.
+
 ## Testando o fluxo assíncrono
 
 1. Autentique-se como `medico1` ou `enfermeiro1` e crie uma consulta
