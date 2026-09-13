@@ -233,11 +233,12 @@ cd notificacao-service
 ./mvnw test
 ```
 
-Para gerar o relatório de cobertura JaCoCo do serviço de agendamento:
+Para executar os testes, gerar o relatório JaCoCo e validar o limite mínimo de
+80% de cobertura de linhas e branches no serviço de agendamento:
 
 ```bash
 cd agendamento-service
-./mvnw org.jacoco:jacoco-maven-plugin:prepare-agent test org.jacoco:jacoco-maven-plugin:report
+./mvnw verify
 ```
 
 O relatório HTML é gerado em:
