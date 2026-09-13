@@ -215,6 +215,8 @@ Os testes automatizados do projeto cobrem:
 - endpoints REST e GraphQL do serviço de agendamento;
 - autenticação HTTP Basic e autorização dos perfis médico, enfermeiro e
   paciente;
+- processamento de eventos de consulta criada e atualizada pelo listener do
+  serviço de notificações;
 - inicialização dos serviços.
 
 Para executar os testes do serviço de agendamento:
