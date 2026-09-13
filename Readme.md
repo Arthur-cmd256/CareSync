@@ -206,6 +206,52 @@ Requer VS Code com a extensão **Dev Containers** e Docker instalado.
    cd notificacao-service && mvn spring-boot:run
    ```
 
+## Testes e cobertura
+
+Os testes automatizados do projeto cobrem:
+
+- regras de negócio do `ConsultaService`, incluindo criação, edição,
+  permissões e consultas futuras;
+- endpoints REST e GraphQL do serviço de agendamento;
+- autenticação HTTP Basic e autorização dos perfis médico, enfermeiro e
+  paciente;
+- inicialização dos serviços.
+
+Para executar os testes do serviço de agendamento:
+
+```bash
+cd agendamento-service
+./mvnw test
+```
+
+Para executar os testes do serviço de notificações:
+
+```bash
+cd notificacao-service
+./mvnw test
+```
+
+Para gerar o relatório de cobertura JaCoCo do serviço de agendamento:
+
+```bash
+cd agendamento-service
+./mvnw org.jacoco:jacoco-maven-plugin:prepare-agent test org.jacoco:jacoco-maven-plugin:report
+```
+
+O relatório HTML é gerado em:
+
+```text
+agendamento-service/target/site/jacoco/index.html
+```
+
+No Dev Container, ele pode ser aberto servindo a pasta por HTTP:
+
+```bash
+python3 -m http.server 8080 --directory agendamento-service/target/site/jacoco
+```
+
+Depois, acesse `http://localhost:8080/index.html` no navegador.
+
 ## Testando o fluxo assíncrono
 
 1. Autentique-se como `medico1` ou `enfermeiro1` e crie uma consulta

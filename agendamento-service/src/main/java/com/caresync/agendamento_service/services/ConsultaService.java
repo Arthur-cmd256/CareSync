@@ -77,7 +77,7 @@ public class ConsultaService {
                 "CRIADA"
             ));
 
-        return consultaMapper.toResponseDTO(consultaRepository.save(consultaSalva));
+        return consultaMapper.toResponseDTO(consultaSalva);
     }
 
     public ConsultaResponseDTO atualizar(Long id, ConsultaUpdateDTO requestDTO) {
